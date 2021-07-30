@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -79,12 +80,12 @@ public class UserServlet extends HttpServlet {
 	private void getUserUpdate(HttpServletRequest req, HttpServletResponse resp) {
 		String id = req.getParameter("id");
 		System.out.println(id + " so id la");
-		if(id == null)
+		if (id == null)
 			return;
-		int numId= Integer.parseInt(id);
+		int numId = Integer.parseInt(id);
 		try {
 			User user = service.findById(numId);
-			if(user!=null) {
+			if (user != null) {
 				req.setAttribute("user", user);
 			}
 			req.getRequestDispatcher(JspConst.USER_UPDATE).forward(req, resp);
@@ -100,8 +101,23 @@ public class UserServlet extends HttpServlet {
 		req.getRequestDispatcher(JspConst.USER_ADD).forward(req, resp);
 	}
 
-	private void getUserProfile(HttpServletRequest req, HttpServletResponse resp) {
-		// TODO Auto-generated method stub
+	private void getUserProfile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// kiem tra cookie - email
+		String email=null;
+		Cookie[] cookies = req.getCookies();
+		int cookiesCount = cookies == null ? 0 : cookies.length;
+		for (int i = 0; i < cookiesCount; i++)
+		{
+			if (cookies[i].getName().equals("email")) {
+				email = cookies[i].getValue();
+			}
+				
+		}
+		if(email != null) {
+			User user = service.findByEmail(email);
+			req.setAttribute("user", user);
+		}
+	req.getRequestDispatcher(JspConst.USER_PROFILE).forward(req,resp);
 
 	}
 

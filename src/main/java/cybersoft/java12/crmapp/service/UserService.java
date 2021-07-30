@@ -54,5 +54,15 @@ public class UserService {
 		}
 		return null;
 	}
+	public User findByEmail(String email) {
+		User user = null;
+		try {
+			user = dao.findByEmail(email);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return user;
+	}
 
 }

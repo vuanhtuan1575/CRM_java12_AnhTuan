@@ -127,6 +127,7 @@ public class UserDao {
 	}
 
 	public User findById(int id) throws SQLException {
+		User user = null;
 		String query = "SELECT * FROM user WHERE id=?";
 		Connection connection = MySqlConnection.getConnection();
 		try {
@@ -134,7 +135,7 @@ public class UserDao {
 			statement.setInt(1, id);
 
 			ResultSet resultSet = statement.executeQuery();
-			User user = null;
+			
 			while (resultSet.next()) {
 				user = new User();
 				user.setId(resultSet.getInt("id"));
@@ -142,8 +143,7 @@ public class UserDao {
 				user.setEmail(resultSet.getString("email"));
 				user.setPhone(resultSet.getString("phone"));
 			}
-			if(user != null)
-				return user;
+			
 
 		} catch (SQLException e) {
 			System.out.println("Unable to connect to database.");
@@ -151,6 +151,30 @@ public class UserDao {
 		} finally {
 			connection.close();
 		}
-		return null;
+		return user;
+	}
+	public User findByEmail(String email) throws SQLException {
+		User user = null;
+		String query = "SELECT * FROM user WHERE email=?";
+		Connection connection = MySqlConnection.getConnection();
+		try {
+			PreparedStatement statement = connection.prepareStatement(query);
+			statement.setString(1, email);
+			ResultSet resultSet = statement.executeQuery();
+			
+			while (resultSet.next()) {
+				user = new User();
+				user.setId(resultSet.getInt("id"));
+				user.setName(resultSet.getString("name"));
+				user.setEmail(resultSet.getString("email"));
+				user.setPhone(resultSet.getString("phone"));
+			}
+		}catch(SQLException ex) {
+			
+		}
+		finally {
+			connection.close();
+		}
+		return user;
 	}
 }
